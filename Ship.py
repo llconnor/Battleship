@@ -12,6 +12,14 @@ class ShipOutOfBoundsException(Exception):
     def __init__(self, message):
         self.message = message
 
+class ShipOverlapException(Exception):
+    """
+        Exception raised for a ship overlapping another ship
+    """
+
+    def __init__(self, message):
+        self.message = message
+
 
 class Ship:
     _MAX_LEN = 5
@@ -27,6 +35,7 @@ class Ship:
                 + ") outside valid range Min="
                 + str(self._MIN_LEN) + " Max=" + str(self._MAX_LEN))
         self.len = len
+        self.placed = False
 
 	
     def placeShip(self, x:int, y:int, horizontal:bool):
@@ -38,6 +47,8 @@ class Ship:
             
             NOTE: All x,y coordinates are assumed to be the top/left most
             parts of the ship
+            Does not check to see whether other ships exist here (checked at 
+            Fleet level)
         """
         if x >= self._MAX_X or y >= self._MAX_Y:
             raise ShipOutOfBoundsException("Ship out of bounds: x,y = "
@@ -58,6 +69,7 @@ class Ship:
         self.x = x
         self.y = y
         self.horizontal = horizontal
+        self.placed = True
 
     def atLocation(self, x:int, y:int) -> bool:
         """
@@ -80,3 +92,39 @@ class Ship:
                     return True
             return False
         return True
+
+    def clearShip(self):
+        """
+            Resets the values of the ship (used in the case when a ship
+            is illegally placed)
+        """
+        self.x = None
+        self.y = None
+        self.placed = False
+
+    def printLoc(self) -> str:
+        """
+            Returns a string for printing the location of a ship
+        """
+        return "(" + str(self.x) + "," + str(self.y) + ")"
+
+    def shipsOverlap(self, comp_ship):
+        """
+            Checks whether this ship overlaps with another ship
+            If there is an overlap then it throws an ShipOverlapException
+            and clears the values for our ship
+        """
+        # *** TODO I really hate this On^2 implemenation, make this better
+        msg = "Ship placed at " + self.printLoc() + " overlaps with Ship at " + comp_ship.printLoc()
+        if self.horizontal:
+            for i in range(self.x, self.x + self.len):
+                if comp_ship.atLocation(i, self.y):
+                    self.clearShip()
+                    raise ShipOverlapException(msg)
+        else: # vertical placement
+            for i in range(self.y, self.y + self.len):
+                if comp_ship.atLocation(self.x, i):
+                    self.clearShip()
+                    raise ShipOverlapException(msg)
+        # if no exception is raised then we must be goog
+        

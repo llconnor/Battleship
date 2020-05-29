@@ -96,7 +96,88 @@ class TestShipMethods(unittest.TestCase):
         
         # missses 1 to the top
         self.assertFalse(x5.atLocation(2,2))
+        
+    def test_ship_non_overlap_simple(self):
+        x5 = Ship.Ship(5)
+        x4 = Ship.Ship(4)
+        # non overlapping on horizontal
+        x5.placeShip(0,0,True)
+        x4.placeShip(0,1,True)
+        x4.shipsOverlap(x5)
+        self.assertTrue(x4.placed)
+        self.assertTrue(x4.x == 0)
+        self.assertTrue(x4.y == 1)
+        # non overlapping on vertical
+        x5.placeShip(0,0,False)
+        x4.placeShip(1,0,False)
+        x4.shipsOverlap(x5)
+        self.assertTrue(x4.placed)
+        self.assertTrue(x4.x == 1)
+        self.assertTrue(x4.y == 0)
+        self.assertTrue(x5.placed)
+        self.assertTrue(x5.x == 0)
+        self.assertTrue(x5.y == 0)
 
+    def test_ship_overlap_x(self):
+        x5 = Ship.Ship(5)
+        x4 = Ship.Ship(4)
+        # overlapping on horizontal
+        x5.placeShip(0,0,True)
+        x4.placeShip(1,0,True)
+        with self.assertRaises(Exception) as context:
+            x4.shipsOverlap(x5)
+        self.assertFalse(x4.placed)
+        self.assertTrue(x4.x == None)
+        self.assertTrue(x4.y == None)
+        self.assertTrue(x5.placed)
+        self.assertTrue(x5.x == 0)
+        self.assertTrue(x5.y == 0)
+
+    def test_ship_overlap_y(self):
+        x5 = Ship.Ship(5)
+        x4 = Ship.Ship(4)
+        # overlapping on vertical
+        x5.placeShip(0,0,False)
+        x4.placeShip(0,1,False)
+        with self.assertRaises(Exception) as context:
+            x4.shipsOverlap(x5)
+        self.assertFalse(x4.placed)
+        self.assertTrue(x4.x == None)
+        self.assertTrue(x4.y == None)
+        # quick check to make sure we didn't clear x5
+        self.assertTrue(x5.placed)
+        self.assertTrue(x5.x == 0)
+        self.assertTrue(x5.y == 0)
+        
+    def test_ship_overlap_xy(self):
+        # test that if one is vert and one horiz that we find overlap
+        x5 = Ship.Ship(5)
+        x4 = Ship.Ship(4)
+        # overlapping at beginning
+        x5.placeShip(0,0,False)
+        x4.placeShip(0,0,True)
+        with self.assertRaises(Exception) as context:
+            x4.shipsOverlap(x5)
+        self.assertFalse(x4.placed)
+        self.assertTrue(x4.x == None)
+        self.assertTrue(x4.y == None)
+        # this should just catch the bottom of x5
+        x4.placeShip(0,4,True)
+        with self.assertRaises(Exception) as context:
+            x4.shipsOverlap(x5)
+        self.assertFalse(x4.placed)
+        self.assertTrue(x4.x == None)
+        self.assertTrue(x4.y == None)
+        # switch x5 to horizontal and make sure we still see overlap
+        x5.placeShip(0,0,True)
+        x4.placeShip(4,0,False)
+        with self.assertRaises(Exception) as context:
+            x4.shipsOverlap(x5)
+        self.assertFalse(x4.placed)
+        self.assertTrue(x4.x == None)
+        self.assertTrue(x4.y == None)
+
+        
 
 if __name__ == '__main__':
     unittest.main()
