@@ -15,5 +15,23 @@ class TestFleetMethods(unittest.TestCase):
             # will throw exceptions if there is overlap
             test_fleet.ship_list[0].shipsOverlap(test_fleet.ship_list[i])
 
+    def test_fleet_loc(self):
+        test_fleet = Fleet.Fleet()
+        exp_loc = []
+        for i in range(0, len(test_fleet.ship_list)):
+            # will throw exceptions if there is overlap
+            test_fleet.ship_list[i].placeShip(i, 2, False)
+            for j in range(0, test_fleet.ship_list[i].ship_len):
+                exp_loc.append([i,j+2])
+        self.assertTrue(exp_loc, test_fleet.getFleetLoc())
+        exp_loc = []
+        for i in range(0, len(test_fleet.ship_list)):
+            # will throw exceptions if there is overlap
+            test_fleet.ship_list[i].placeShip(2, i, True)
+            for j in range(0, test_fleet.ship_list[i].ship_len):
+                exp_loc.append([j+2,i])
+        self.assertTrue(exp_loc, test_fleet.getFleetLoc())
+
+
 if __name__ == '__main__':
     unittest.main()

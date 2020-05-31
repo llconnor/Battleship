@@ -29,13 +29,14 @@ class Ship:
     _MAX_X = 10
     _MAX_Y = 10
     
-    def __init__(self, len: int):
-        if (len < self._MIN_LEN) or (len > self._MAX_LEN):
-            raise ShipLenException("Ship Length (" + str(len) 
+    def __init__(self, in_len: int):
+        if (in_len < self._MIN_LEN) or (in_len > self._MAX_LEN):
+            raise ShipLenException("Ship Length (" + str(in_len) 
                 + ") outside valid range Min="
                 + str(self._MIN_LEN) + " Max=" + str(self._MAX_LEN))
-        self.len = len
+        self.ship_len = in_len
         self.placed = False
+        self.loc = []
 
 	
     def placeShip(self, x:int, y:int, horizontal:bool):
@@ -59,13 +60,13 @@ class Ship:
                 + str(x) + "," + str(y) + " Min x,y = " + str(self._MIN_X)
                 + "," + str(self._MIN_Y))
         if horizontal:
-            if (x+self.len) > self._MAX_X:
+            if (x+self.ship_len) > self._MAX_X:
                 raise ShipOutOfBoundsException("Ship out of bounds: x = "
-                + str(x) + " and len " + str(self.len) + " Max x = " + str(self._MAX_X))
+                + str(x) + " and len " + str(self.ship_len) + " Max x = " + str(self._MAX_X))
         if horizontal == False:
-            if (y+self.len) > self._MAX_Y:
+            if (y+self.ship_len) > self._MAX_Y:
                 raise ShipOutOfBoundsException("Ship out of bounds: y = "
-                + str(y) + " and len " + str(self.len) + " Max y = " + str(self._MAX_Y)) 
+                + str(y) + " and len " + str(self.ship_len) + " Max y = " + str(self._MAX_Y)) 
         self.x = x
         self.y = y
         self.horizontal = horizontal
@@ -75,24 +76,36 @@ class Ship:
         """
             Returns True if any part of the ship exists on the x,y range indicated
         """
+        """
+        *** TODO get this working
+        if len(self.loc) == 0:
+            self.getShipLoc()
+        print ("x,y" + str(x) + str(y))
+        print ("Loc = " + str(self.loc))
+        for i in self.loc:
+            [test_x, test_y] = i
+            if test_x == x and test_y == y:
+                return True
+        return False
+        """
         if (x != self.x and y != self.y):
             return False
         if self.horizontal == True:
             if y != self.y:
                 return False
-            for i in range(self.x, self.x + self.len):
+            for i in range(self.x, self.x + self.ship_len):
                 if i == x:
                     return True
             return False
         else: # self.horizontal == False
             if x != self.x:
                 return False
-            for i in range(self.y, self.y + self.len):
+            for i in range(self.y, self.y + self.ship_len):
                 if i == y:
                     return True
             return False
         return True
-
+        
     def clearShip(self):
         """
             Resets the values of the ship (used in the case when a ship
@@ -117,14 +130,30 @@ class Ship:
         # *** TODO I really hate this On^2 implemenation, make this better
         msg = "Ship placed at " + self.printLoc() + " overlaps with Ship at " + comp_ship.printLoc()
         if self.horizontal:
-            for i in range(self.x, self.x + self.len):
+            for i in range(self.x, self.x + self.ship_len):
                 if comp_ship.atLocation(i, self.y):
                     self.clearShip()
                     raise ShipOverlapException(msg)
         else: # vertical placement
-            for i in range(self.y, self.y + self.len):
+            for i in range(self.y, self.y + self.ship_len):
                 if comp_ship.atLocation(self.x, i):
                     self.clearShip()
                     raise ShipOverlapException(msg)
         # if no exception is raised then we must be goog
-        
+    
+    def getShipLoc(self):
+        """
+            Returns a list of x,y pairs for a ship's location
+        """
+        self.loc = []
+        # *** TODO Add in memoization of loc data
+        #if len(self.loc) > 0:
+        #    return self.loc
+        if self.horizontal:
+            for i in range(self.x, self.x + self.ship_len):
+                self.loc.append([i, self.y])
+        else:
+            for i in range(self.y, self.y + self.ship_len):
+                self.loc.append([self.x, i])
+        return self.loc
+            

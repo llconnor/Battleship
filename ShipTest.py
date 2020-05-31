@@ -177,7 +177,17 @@ class TestShipMethods(unittest.TestCase):
         self.assertTrue(x4.x == None)
         self.assertTrue(x4.y == None)
 
+    def test_ship_loc(self):
+        x5 = Ship.Ship(5)
+        x5.placeShip(0,0,False)
+        expectedLoc = [[0,0],[0,1],[0,2],[0,3],[0,4]]
+        self.assertTrue(expectedLoc == x5.getShipLoc())
+        x5.placeShip(0,0,True)
+        expectedLoc = [[0,0],[1,0],[2,0],[3,0],[4,0]]
+        self.assertTrue(expectedLoc == x5.getShipLoc())
+        x5.placeShip(4,0,True)
+        expectedLoc = [[4,0],[5,0],[6,0],[7,0],[8,0]]
+        self.assertTrue(expectedLoc == x5.getShipLoc())
         
-
 if __name__ == '__main__':
     unittest.main()

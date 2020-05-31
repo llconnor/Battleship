@@ -32,10 +32,20 @@ class Fleet:
                 rand_y = random.randint(0, self._MAX_Y)
                 rand_hor = bool(random.getrandbits(1))
                 try:
-                    print("Placing ship (i,x,y,horizontal)" + str(i) + str(rand_x) + str(rand_y) + str(rand_hor))
                     self.placeShip(i, rand_x, rand_y, rand_hor)
                     success = True
+                    #print("Placed ship (i,x,y,horizontal)" + str(i) + str(rand_x) + str(rand_y) + str(rand_hor))
                 except:
                 # *** TODO figure out why we can't see except ShipOverlapException:
                 # We want to check against overlap and overflow
                     pass
+                    
+    def getFleetLoc(self):
+        """
+            Returns the location of all of the ships as a list x,y pairs
+            Helps to map out location on the board
+        """
+        fleet_loc = []
+        for i in range(len(self.ship_list)):
+            fleet_loc.append(self.ship_list[i].getShipLoc())
+        return fleet_loc
