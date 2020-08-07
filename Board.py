@@ -1,3 +1,4 @@
+import Fleet
 class Board:
     _XSIZE=10
     _YSIZE=10
@@ -7,8 +8,21 @@ class Board:
     SHIP=3
     
     def __init__(self):
-        self.shipboard = [[0]*self._YSIZE]*self._XSIZE 
-    
+        self.shipboard = [[self.NOTHING for i in range(10)] for j in range(10)]        
+
+        # update shipboard with the location of our fleet
+    def mapFleet (self, fleet:Fleet):
+        fleet_loc = fleet.getFleetLoc()
+        for fleet_ship in fleet_loc:
+            for ship_xy in fleet_ship:
+                x = ship_xy[0]
+                y = ship_xy[1]
+                self.placeVal(self.SHIP, x, y)
+        print (self.shipboard)
+                
+    def placeVal(self, val:int, x:int, y:int):
+        self.shipboard[x][y] = val
+
     def printBoard(self):
         for i in range(self._YSIZE):
             self.printSpacer()
@@ -20,7 +34,7 @@ class Board:
         self.printSpacer()
     
     def printCell(self, x:int, y:int) -> str:
-        val = self.shipboard[x][y]
+        val = self.shipboard[y][x]
         if val == 0:
             return " "
         if val == 1: # miss

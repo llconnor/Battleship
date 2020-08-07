@@ -32,6 +32,5 @@ class TestFleetMethods(unittest.TestCase):
                 exp_loc.append([j+2,i])
         self.assertTrue(exp_loc, test_fleet.getFleetLoc())
 
-
 if __name__ == '__main__':
     unittest.main()
