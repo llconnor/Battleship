@@ -1,27 +1,29 @@
-import Board
-import Ship
-import Fleet
+import Player
+import Shot
 
 if __name__ == '__main__':
-    p1_board = Board.Board()
-    p1_hitboard = Board.Board()
-    p2_board = Board.Board()
-    p2_hitboard = Board.Board()
-    
-    p1_fleet = Fleet.Fleet()
-    p2_fleet = Fleet.Fleet()
-    
-    p1_fleet.randomlyPlaceFleet()
-    p2_fleet.randomlyPlaceFleet()
-    
-    p1_board.mapFleet(p1_fleet)
-    p2_board.mapFleet(p2_fleet)
+    player1 = Player.Player()
+    player2 = Player.Player()
     
     print("P1 Board")
-    p1_board.printBoard()
+    player1.printBoards()
     print("P2 Board")
-    p2_board.printBoard()
+    player2.printBoards()
+    for i in range(0, 100):
+        shot = player1.makeShot()
+        result = player2.addShot(shot)
+#        player1.sendResult(result)
+
+#        shot = player1.makeShot()
+#        result = player2.addShot(shot)
+#        player1.sendResult(result)
+
+    #print("P1 Board")
+    #player1.printBoards()
+    print("P2 Board")
+    player2.printBoards()
     
+        
     #fleet = Fleet.Fleet()
     #fleet.randomlyPlaceFleet()
     #print (fleet.getFleetLoc())
@@ -29,6 +31,7 @@ if __name__ == '__main__':
     #board.printBoard()
     
 # *** Todo list
-# Add shooting logic
-# Add hit/sink detections
+# Prevent repeats of shots at the same location
+# Add sink/game end logic
+# Develop actual game logic
 # Fix todos

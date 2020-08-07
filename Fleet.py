@@ -49,3 +49,12 @@ class Fleet:
         for i in range(len(self.ship_list)):
             fleet_loc.append(self.ship_list[i].getShipLoc())
         return fleet_loc
+
+    def shipAt(self, x, y) -> bool:
+        """
+            Returns True if a ship exists at the given x,y coordinates.
+        """
+        for ship in self.ship_list:
+            if ship.atLocation(x,y):
+                return True
+        return False
